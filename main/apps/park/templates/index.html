@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Discovery Park Interaction Pattern</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <!-- Load Esri Leaflet from CDN.  it has no .css stylesheet of its own, only .js -->
+    <script src="https://unpkg.com/esri-leaflet@2.4.0/dist/esri-leaflet.js" integrity="sha512-kq0i5Xvdq0ii3v+eRLDpa++uaYPlTuFaOYrfQ0Zdjmms/laOwIvLMAxh7cj1eTqqGG47ssAcTY4hjkWydGt6Eg=="
+        crossorigin=""></script>
+    <!-- Load Esri Leaflet Renderers from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-renderers@2.0.6/dist/esri-leaflet-renderers.js" integrity="sha512-mhpdD3igvv7A/84hueuHzV0NIKFHmp2IvWnY5tIdtAHkHF36yySdstEVI11JZCmSY4TCvOkgEoW+zcV/rUfo0A=="
+        crossorigin=""></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet"> {% load static %}
+    <link rel="stylesheet" type="text/css" href="{%static  'css/main.css' %}">
+
+</head>
+
+<body>
+    <div id="Introduction">
+        <div class="title">
+            <h2>Welcome to Friends of Discovery Park</h2>
+            <h3>Human Nature Interaction Map!</h3>
+        </div>
+        <!-- <img src="https://www.tripsavvy.com/thmb/0caLr08sWl_55Dh57ma_qhWihxA=/950x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/IMG_2601-5c45f0d746e0fb0001e2afe9.jpg"> -->
+    </div>
+
+    <div id="Map" class="tabcontent">
+        <script>
+            var patterns = []
+            var locations = []
+            var currentLocations = "place";
+        </script>
+
+        <script>
+            function insertIntoPatterns() {
+                if (currentLocations != "") {
+                    patterns.push(document.getElementById("patternbox").value);
+                    locations.push(currentLocations);
+                    var patternLength = patterns.length;
+                    var printLocation = document.getElementById("results");
+                    printLocation.innerHTML += "<p>" + "Pattern:  " + patterns[patternLength - 1] + "  Location:" + currentLocations + "</p><br>";
+                    currentLocations = "";
+                }
+            }
+
+        </script>
+        <div class="patterninput">
+            <form method='post' action="/entermsg">
+                {% csrf_token %}
+                <h2 style="text-align:center">Tell us what do you think!</h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <p style="color : red;">{{message}}</p>
+                        {% endif %}
+                    {% endfor %}
+    		    {% endif %}
+                <label for="resp">Enter your comment : </label>
+                <textarea type="text" name="resp" row="30" cols="50" placeholder="I was walking the trail with my friends and we were talking since we haven’t seen each other in nearly a month. We weren’t paying too much attention to anything but conversing with each other. That is until we heard a buzzing that’s when we stopped and followed the noise. After following the noise for about a minute or so we see a wasp nest. We were absolutely flabbergasted by this since we had never seen one in person. It was amazing to see their nest and them going in and out if it. We took pictures of the nest and with it too. We stayed to look at the nest for a while. It was definitely an amazing thing to see, even though it really wasn’t anything special to the majority it was to us. It was an awesome sight to see and I’m glad I experienced it with my friends. "></textarea>
+                <label for="trans">Please select the method of arriving:</label>
+                <select name="trans">
+                    <option value="Personal Car">Personal Car</option>
+                    <option value="Uber/lyft">Uber/lyft</option>
+                    <option value="Walking">Bus</option>
+                    <option value="Bike">Bike</option>
+                    <option value="Rental Car">Rental Car</option>
+
+                </select>
+                <label for="area">Chose the area you visited :</label>
+                <div id="mapid" style="width: 100%; height:300px"></div>
+                <input type="text" id='Visited' name="area" value='Lighthouse' readonly/>
+                <label for="emotion">Chose your emotion</label>
+                <select name="emotion">
+                    <option value="Happy">Happy</option>
+                    <option value="Exciting">Excited</option>
+                    <option value="Relaxing">Relax</option>
+                    <option value="Enjoying">Enjoy</option>
+                    <option value="Relief">Relief</option>
+                </select>
+                <label for="activity">Chose your activity</label>
+                <select name="activity">
+                    <option value="Jogging">Jogging</option>
+                    <option value="Walking">Walking</option>
+                    <option value="Running">Running</option>
+                    <option value="Playing">Playing</option>
+                    <option value="Walking the dog">Walking the dog</option>
+                    <option value="Enjoying View">Enjoying View</option>
+
+                </select>
+                <input type="submit">
+                <!--<<INPUT TYPE = "TEX
+                    T" VALUE ="IPattern" id = 'patternbox' name = 'patternbox'>
+            <INPUT TYPE = "button" Name = "Submit1" VALUE = "Submit" onclick = "insertIntoPatterns()"-->
+                <!--<label for="Interaction Patterns" target="_blank">>Click on a landmark and submit a brief phrase about your experience there!:</label>
+            <input type="text" id="IPattern"><br><br>
+            <input type="submit" name="submit" value="submit">-->
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    var mymap = L.map('mapid').setView([47.6630644, -122.4193195], 14);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'your.mapbox.access.token'
+    }).addTo(mymap);
+    L.marker([47.6593713, -122.4258658]).addTo(mymap).bindPopup("South Beach Trail").on('click', function () { document.getElementById("Visited").value = "South Beach Trail"; });
+    L.marker([47.6657361, -122.4218703]).addTo(mymap).bindPopup("Wolf Tree Nature Area").on('click', function () { document.getElementById("Visited").value = "Wolf Tree Nature Area"; });
+    L.marker([47.6652968, -122.4147915]).addTo(mymap).bindPopup("Discovery Park North Parking Lot").on('click', function () { document.getElementById("Visited").value = "Discovery Park North Parking Lot"; })
+    L.marker([47.6581777, -122.4099764]).addTo(mymap).bindPopup("Fort Lawton Military Cemetery").on('click', function () { document.getElementById("Visited").value = "Fort Lawton Military Cemetery"; });
+    L.marker([47.6613562, -122.4343396]).addTo(mymap).bindPopup("LightHouse").on('click', function () { document.getElementById("Visited").value = "LightHouse"; });
+
+</script>
+<script>
+    function openMap(evt, mapName) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(mapName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>
+
+</html>

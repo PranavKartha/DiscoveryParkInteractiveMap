@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>	
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+		  <!-- Load Esri Leaflet from CDN.  it has no .css stylesheet of its own, only .js -->
+		<script src="https://unpkg.com/esri-leaflet@2.4.0/dist/esri-leaflet.js"
+		integrity="sha512-kq0i5Xvdq0ii3v+eRLDpa++uaYPlTuFaOYrfQ0Zdjmms/laOwIvLMAxh7cj1eTqqGG47ssAcTY4hjkWydGt6Eg=="
+		crossorigin=""></script>
+		<!-- Load Esri Leaflet Renderers from CDN -->
+		<script src="https://unpkg.com/esri-leaflet-renderers@2.0.6/dist/esri-leaflet-renderers.js"
+		integrity="sha512-mhpdD3igvv7A/84hueuHzV0NIKFHmp2IvWnY5tIdtAHkHF36yySdstEVI11JZCmSY4TCvOkgEoW+zcV/rUfo0A=="
+		crossorigin=""></script>	
+		<link rel="stylesheet" href="main.css">
+		<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+	
+	</head>
+	
+	<body>
+
+<!-- Tab content -->
+	
+		
+		<div id="Introduction">
+				<div class="title">
+					<h2>Welcome to Friends of Discovery Park</h2>
+					<h3>Human Nature Interaction Map!</h3>
+				</div>
+				<!-- <img src="https://www.tripsavvy.com/thmb/0caLr08sWl_55Dh57ma_qhWihxA=/950x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/IMG_2601-5c45f0d746e0fb0001e2afe9.jpg"> -->
+		</div>
+		
+		<div id="Map" class="tabcontent" >
+			<h2 style="text-align:center">Tell us what do you think!</h2>
+			<h1><?php echo "This message is from server side." ?></h1>
+			<script>
+				var patterns = []
+				var locations = []
+				var currentLocations = "place";
+			</script>
+			
+			<script>
+				function insertIntoPatterns(){
+				if(currentLocations != ""){
+					patterns.push(document.getElementById("patternbox").value);
+					locations.push(currentLocations);
+					var patternLength = patterns.length;
+					var printLocation = document.getElementById("results");
+					printLocation.innerHTML += "<p>" + "Pattern:  "+patterns[patternLength-1]+ "  Location:" + currentLocations+"</p><br>";
+					currentLocations = "";
+				}}
+
+			</script>
+			<div id="mapid" style="width: 100%; height:300px"></div>
+			<div id="Enter Pattern" class="tabcontent">
+			<div class="patterninput">
+				<form name="IPattern"  method = 'post' action = 'connect.php'>
+					<label for="IPattern">Enter your comment : </label>
+					<textarea type = "text" name = "IPattern" row="10" cols="50"></textarea>
+					<label for="Transportation">Enter your method of transportation :</label>
+					<input type = "text" name = "Transportation"  />
+					<label for="Visited">Chose the area you visited :</label>
+					<input type = "text" id = 'Visited' name = "Visited" value = 'lighthouse' readonly/>
+					 <input type = "submit" > 
+
+				</form>
+				
+			</div>
+			</div>
+			
+			
+			<div id="Select Pattern" class="tabcontent">
+			<div class="patterninputdropdown">
+				<form name="IPatternDropDown"  method = 'post' action = 'connect2.php'>
+					Enter visited area: <input type = "text" name = "Visited"  />
+					<input type = "text" name = "Landmark"/>
+					<label for="Visited">Chose the area you visited :</label>
+					<input type = "text" id = 'Visited' name = "Visited" value = 'lighthouse' >
+					Select an activity.
+					<Select id = "activity" name = "activity">
+						<option value = 'ran'>ran</option>
+						<option value = 'walked'>walked</option>
+						<option value = 'jumped'>jumped</option>
+						<option value = 'skipped'>skipped</option>
+					</select>	
+					Select how this action made you feel.	
+					<Select id = "emotion" name = "emotion">
+						<option value = 'happy'>happy</option>
+						<option value = 'peaceful'>peaceful</option>
+						<option value = 'excited'>excited</option>
+					</select>	
+					
+					Select how you arrived at Discovery Park.	
+					<Select id = "arrival" name = "arrival">
+						<option value = 'walking'>walking</option>
+						<option value = 'bus'>bus</option>
+						<option value = 'Uber'>Uber</option>
+					</select>	
+					
+					
+					<input type = 'submit'>
+				</form>
+				
+			</div>	
+			</div>	
+			
+		</div>
+
+
+
+
+
+	
+	</body>
+	<script>
+			var mymap = L.map('mapid').setView([47.6630644,-122.4193195], 14);
+			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox/streets-v11',
+			tileSize: 512,
+			zoomOffset: -1,
+			accessToken: 'your.mapbox.access.token'
+			}).addTo(mymap);
+			L.marker([47.6593713, -122.4258658]).addTo(mymap).bindPopup("South Beach Trail").on('click', function(){document.getElementById("Visited").value = "South Beach Trail";});
+			L.marker([47.6657361, -122.4218703]).addTo(mymap).bindPopup("Wolf Tree Nature Area").on('click', function(){document.getElementById("Visited").value = "Wolf Tree Nature Area";});																							  
+			L.marker([47.6652968, -122.4147915]).addTo(mymap).bindPopup("Discovery Park North Parking Lot").on('click', function(){document.getElementById("Visited").value = "Discovery Park North Parking Lot";})
+			L.marker([47.6581777, -122.4099764]).addTo(mymap).bindPopup("Fort Lawton Military Cemetery").on('click', function(){document.getElementById("Visited").value = "Fort Lawton Military Cemetery";});
+			L.marker([47.6613562, -122.4343396]).addTo(mymap).bindPopup("LightHouse").on('click', function(){document.getElementById("Visited").value = "LightHouse";});																								  
+
+			var mymap2 = L.map('mapid').setView([47.6630644,-122.4193195], 14);
+			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox/streets-v11',
+			tileSize: 512,
+			zoomOffset: -1,
+			accessToken: 'your.mapbox.access.token'
+			}).addTo(mymap);
+			L.marker([47.6593713, -122.4258658]).addTo(mymap).bindPopup("South Beach Trail").on('click', function(){document.getElementById("Visited").value = "South Beach Trail";});
+			L.marker([47.6657361, -122.4218703]).addTo(mymap).bindPopup("Wolf Tree Nature Area").on('click', function(){document.getElementById("Visited").value = "Wolf Tree Nature Area";});																							  
+			L.marker([47.6652968, -122.4147915]).addTo(mymap).bindPopup("Discovery Park North Parking Lot").on('click', function(){document.getElementById("Visited").value = "Discovery Park North Parking Lot";})
+			L.marker([47.6581777, -122.4099764]).addTo(mymap).bindPopup("Fort Lawton Military Cemetery").on('click', function(){document.getElementById("Visited").value = "Fort Lawton Military Cemetery";});
+			L.marker([47.6613562, -122.4343396]).addTo(mymap).bindPopup("LightHouse").on('click', function(){document.getElementById("Visited").value = "LightHouse";});																								  
+
+	</script>
+	<script>
+function openMap(evt, mapName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(mapName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+	</script>
+	
+
+
+</html>

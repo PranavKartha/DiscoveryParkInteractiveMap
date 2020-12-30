@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Pattern</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <a href="/"><button>Home</button></a>
+    {% for item in data %}
+        <div class="infobox">
+            <h2>Location: {{ item.Area_name }}</h2>
+            <h4>Top 50 word wordcloud </h4>
+            <img src="data:image/png;base64,{{ item.Word_Cloud}}" alt="" height="500" ,width="500">
+            <h4>Top 5 word Count</h4>
+            <img src="data:image/png;base64,{{ item.Top5Word_Graph }}" alt="" height="500" ,width="500">
+        </div>
+    {% endfor %}
+    <h4>Park Visit Transportation Type Analysis</h4>
+    <img src="data:image/png;base64,{{ trans_image  }}" alt="" height="500" ,width="500">
+    <h4>Park Visit Emotion Analysis</h4>
+    <img src="data:image/png;base64,{{ emo_image }}" alt="" height="500" ,width="500">
+    <h4>Park Visit Activity Analysis</h4>
+    <img src="data:image/png;base64,{{ act_image  }}" alt="" height="500" ,width="500">
+</body>
+</html>
